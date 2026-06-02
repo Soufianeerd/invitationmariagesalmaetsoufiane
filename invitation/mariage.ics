@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SoufianeSalma//Wedding//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:wedding-soufiane-salma-20261023
+DTSTAMP:20260524T095000Z
+DTSTART;TZID=Europe/Paris:20261023T150000
+DTEND;TZID=Europe/Paris:20261024T040000
+SUMMARY:Mariage de Soufiane & Salma
+DESCRIPTION:Cérémonie civile à la Mairie de Toul (15h00) suivie de la réception au Domaine de Camélia (18h30).
+LOCATION:Mairie de Toul, 13 Rue de Rigny, 54200 Toul
+END:VEVENT
+END:VCALENDAR

@@ -1111,12 +1111,17 @@
       // 3. Envoi vers Google Apps Script
       //    mode 'no-cors' = même méthode que le formulaire RSVP
       //    La réponse est opaque, on considère l'envoi réussi si pas d'exception réseau
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       await fetch(CONFIG.API_URL, {
         method:  'POST',
         mode:    'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        signal:  controller.signal,
         body:    JSON.stringify(payload)
       });
+      clearTimeout(timeoutId);
 
       document.getElementById('loadingState').classList.remove('visible');
       showStep('step4');
@@ -1125,7 +1130,11 @@
       console.error('Send error:', err);
       document.getElementById('loadingState').classList.remove('visible');
       showStep('step3');
-      showAlert('Erreur lors de l\'envoi. Vérifiez votre connexion et réessayez.');
+      if (err.name === 'AbortError') {
+        showAlert("La connexion est trop lente. Rapprochez-vous d'une zone couverte et réessayez.");
+      } else {
+        showAlert('Erreur lors de l\'envoi. Vérifiez votre connexion et réessayez.');
+      }
     }
   }
 

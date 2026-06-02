@@ -767,7 +767,7 @@
     const caption  = document.getElementById('captionInput').value.trim();
 
     /* ── Helper : fetch avec timeout ── */
-    function fetchWithTimeout(url, options, ms = 45000) {
+    function fetchWithTimeout(url, options, ms = 15000) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), ms);
       return fetch(url, { ...options, signal: controller.signal })
@@ -829,13 +829,13 @@
 
       /* 1er essai */
       try {
-        await fetchWithTimeout(CONFIG.API_URL, fetchOptions, 45000);
+        await fetchWithTimeout(CONFIG.API_URL, fetchOptions, 15000);
       } catch (e1) {
         if (e1.name === 'AbortError') {
           /* Timeout → on réessaie une fois */
           document.getElementById('loadingText').textContent = 'Reconnexion…';
           await new Promise(r => setTimeout(r, 1500));
-          await fetchWithTimeout(CONFIG.API_URL, fetchOptions, 45000);
+          await fetchWithTimeout(CONFIG.API_URL, fetchOptions, 15000);
         } else {
           throw e1;
         }
@@ -868,7 +868,7 @@
       document.getElementById('loadingState').classList.remove('visible');
       showStep('step3');
       const msg = err.name === 'AbortError'
-        ? 'La connexion a pris trop de temps. Vérifiez votre réseau et réessayez.'
+        ? "La connexion est trop lente. Rapprochez-vous d'une zone couverte et réessayez."
         : 'Erreur lors de l\'envoi. Vérifiez votre connexion et réessayez.';
       showAlert(msg);
     }

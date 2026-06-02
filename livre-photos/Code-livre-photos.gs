@@ -25,6 +25,7 @@
 
 // [EDIT] Nom du dossier Drive (créé automatiquement)
 // Parallèle au dossier audio : "Livre d'Or Audio — Mariage S&S 🎙️"
+const ENABLE_OWNER_NOTIFS = false;
 const DRIVE_FOLDER_NAME = "Livre Photos Souvenirs — Mariage S&S 📸";
 
 // [EDIT] ID de votre Google Sheet pour le registre
@@ -77,7 +78,9 @@ function doPost(e) {
     }
 
     // 5. Notification à l'organisateur (Soufiane)
-    sendOwnerNotification_(guestName, relation, caption, filename, fileUrl, previewUrl, photoBlob);
+    if (ENABLE_OWNER_NOTIFS) {
+      sendOwnerNotification_(guestName, relation, caption, filename, fileUrl, previewUrl, photoBlob);
+    }
 
     // 6. Envoyer la photo à l'invité si demandé
     if (sendToSelf && guestEmail && guestEmail.includes('@')) {

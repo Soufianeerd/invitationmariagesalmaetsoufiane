@@ -55,12 +55,12 @@
 
 ## Étape 5 — Connecter le formulaire à votre script
 
-1. Ouvrez le fichier **`index.html`** dans un éditeur de texte (Notepad, VS Code, etc.)
-2. Cherchez la ligne suivante (vers la fin du fichier) :
+1. Ouvrez le fichier **`invitation.js`**
+2. Cherchez la ligne suivante (vers le haut du fichier) :
+   ```javascript
+   const SCRIPT_URL = '...';
    ```
-   const SCRIPT_URL = 'REMPLACER_PAR_VOTRE_URL_APPS_SCRIPT';
-   ```
-3. Remplacez `REMPLACER_PAR_VOTRE_URL_APPS_SCRIPT` par l'URL copiée à l'étape 4
+3. Remplacez l'URL par la vôtre
 4. **Sauvegardez** le fichier
 
 ---
