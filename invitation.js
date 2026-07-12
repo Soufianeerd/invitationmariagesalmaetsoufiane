@@ -1,5 +1,5 @@
 // Configuration du script Google Sheets Web App
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1tbaC9MZfPGuklnIQSlkk2IywKkWzoxsgtlmnCIN8G96UI4v36XHuK3BZrV6bxvfu/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlAuwdkVDK2BN0tmOeCR5Hq-UeHKFr0nZF4LJsABug0K-b5pJ-VjeawJDQp_f0fYVQ/exec';
 document.addEventListener('DOMContentLoaded', () => {
     const seal = document.getElementById('introBtn');
     const screen = document.getElementById('introScreen');
@@ -58,17 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const radios = document.querySelectorAll('input[name="attendance"]');
         const guestCountGroup = document.getElementById('guestCountGroup');
 
-        radios.forEach(r => {
-            r.addEventListener('change', () => {
-                if (guestCountGroup) {
-                    guestCountGroup.style.display = (r.value === 'oui' && r.checked) ? 'block' : 'none';
-                    const guestsSelect = document.getElementById('guests');
-                    if (guestsSelect) {
-                        guestsSelect.required = (r.value === 'oui' && r.checked);
-                    }
+        function toggleGuestCount() {
+            if (guestCountGroup) {
+                const selected = document.querySelector('input[name="attendance"]:checked');
+                const isOui = selected && selected.value === 'oui';
+                
+                guestCountGroup.style.display = isOui ? 'block' : 'none';
+                
+                const guestsSelect = document.getElementById('guests');
+                if (guestsSelect) {
+                    guestsSelect.required = isOui;
                 }
-            });
+            }
+        }
+
+        radios.forEach(r => {
+            r.addEventListener('change', toggleGuestCount);
         });
+        
+        // Vérification initiale au cas où le navigateur a gardé le bouton en mémoire
+        toggleGuestCount();
 
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
