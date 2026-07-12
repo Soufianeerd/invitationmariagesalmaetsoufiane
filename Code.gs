@@ -11,7 +11,7 @@ function doPost(e) {
     const sheet = ss.getSheetByName(CONFIG.SHEET_NAME) || ss.insertSheet(CONFIG.SHEET_NAME);
     
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(['Date', 'Nom', 'Email', 'Presence', 'Allergies', 'Message']);
+      sheet.appendRow(['Date', 'Nom', 'Email', 'Presence', 'Nb. Personnes', 'Allergies', 'Message']);
     }
 
     sheet.appendRow([
@@ -19,6 +19,7 @@ function doPost(e) {
       data.name,
       data.email,
       (data.attendance === 'oui' ? '✅ Présent(e)' : '❌ Absent(e)'),
+      data.guests || '1',
       data.allergies || 'Aucune',
       data.message || ''
     ]);

@@ -55,6 +55,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const successMsg = document.getElementById('successMessage');
 
     if (rsvpForm) {
+        const radios = document.querySelectorAll('input[name="attendance"]');
+        const guestCountGroup = document.getElementById('guestCountGroup');
+
+        radios.forEach(r => {
+            r.addEventListener('change', () => {
+                if (guestCountGroup) {
+                    guestCountGroup.style.display = (r.value === 'oui' && r.checked) ? 'block' : 'none';
+                    const guestsSelect = document.getElementById('guests');
+                    if (guestsSelect) {
+                        guestsSelect.required = (r.value === 'oui' && r.checked);
+                    }
+                }
+            });
+        });
+
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -72,11 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Récupération sécurisée des valeurs pour éviter le crash si un élément est absent du DOM
             const allergiesInput = document.getElementById('allergies');
             const messageInput = document.getElementById('message');
+            const guestsSelect = document.getElementById('guests');
 
             const data = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 attendance: presence.value,
+                guests: guestsSelect && presence.value === 'oui' ? guestsSelect.value : '1',
                 allergies: allergiesInput ? allergiesInput.value : 'Aucune',
                 message: messageInput ? messageInput.value : ''
             };
