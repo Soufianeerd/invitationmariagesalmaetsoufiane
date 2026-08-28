@@ -1,5 +1,5 @@
 // Configuration du script Google Sheets Web App
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby1tbaC9MZfPGuklnIQSlkk2IywKkWzoxsgtlmnCIN8G96UI4v36XHuK3BZrV6bxvfu/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlAuwdkVDK2BN0tmOeCR5Hq-UeHKFr0nZF4LJsABug0K-b5pJ-VjeawJDQp_f0fYVQ/exec';
 document.addEventListener('DOMContentLoaded', () => {
     const seal = document.getElementById('introBtn');
     const screen = document.getElementById('introScreen');
@@ -55,6 +55,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const successMsg = document.getElementById('successMessage');
 
     if (rsvpForm) {
+        const radios = document.querySelectorAll('input[name="attendance"]');
+        const guestCountGroup = document.getElementById('guestCountGroup');
+
+        function toggleGuestCount() {
+            if (guestCountGroup) {
+                const selected = document.querySelector('input[name="attendance"]:checked');
+                const isOui = selected && selected.value === 'oui';
+                
+                guestCountGroup.style.display = isOui ? 'block' : 'none';
+                
+                const guestsSelect = document.getElementById('guests');
+                if (guestsSelect) {
+                    guestsSelect.required = isOui;
+                }
+            }
+        }
+
+        radios.forEach(r => {
+            r.addEventListener('change', toggleGuestCount);
+        });
+        
+        // Vérification initiale au cas où le navigateur a gardé le bouton en mémoire
+        toggleGuestCount();
+
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -72,11 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Récupération sécurisée des valeurs pour éviter le crash si un élément est absent du DOM
             const allergiesInput = document.getElementById('allergies');
             const messageInput = document.getElementById('message');
+            const guestsSelect = document.getElementById('guests');
 
             const data = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 attendance: presence.value,
+                guests: guestsSelect && presence.value === 'oui' ? guestsSelect.value : '1',
                 allergies: allergiesInput ? allergiesInput.value : 'Aucune',
                 message: messageInput ? messageInput.value : ''
             };
