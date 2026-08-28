@@ -43,8 +43,25 @@ export default function ClosedBackView() {
     );
   };
 
+  const handleCopyJSON = () => {
+    const json = {
+      "back-closed": backConfig,
+      "seal": sealConfig
+    };
+    navigator.clipboard.writeText(JSON.stringify(json, null, 2));
+    alert("Copied to clipboard!");
+  };
+
   const controls = (
     <>
+      <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-end" }}>
+        <button 
+          onClick={handleCopyJSON}
+          style={{ padding: "0.25rem 0.5rem", background: "#0066cc", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+        >
+          Copy JSON
+        </button>
+      </div>
       <CalibrationControls name="Back Closed" config={backConfig} onChange={setBackConfig} />
       <CalibrationControls name="Seal" config={sealConfig} onChange={setSealConfig} />
     </>

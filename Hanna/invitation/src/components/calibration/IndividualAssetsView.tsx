@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { HANNA_ASSETS, HannaAsset } from "@/config/hannaAssets";
+import { HANNA_ASSETS } from "@/config/hannaAssets";
 
 export default function IndividualAssetsView() {
   const assets = Object.values(HANNA_ASSETS);

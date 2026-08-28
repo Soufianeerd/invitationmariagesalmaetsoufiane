@@ -1,14 +1,15 @@
 "use client";
 import React from "react";
-import { EnvelopeAssetPlacement } from "@/config/envelopeCalibration";
+import { ENVELOPE_CONSTANTS, EnvelopeAssetPlacement } from "@/config/envelopeCalibration";
 import { HANNA_ASSETS } from "@/config/hannaAssets";
 
 type Props = {
   innerConfig: EnvelopeAssetPlacement;
   outerConfig: EnvelopeAssetPlacement;
+  debugRotationX?: number;
 };
 
-export default function EnvelopeFlap({ innerConfig, outerConfig }: Props) {
+export default function EnvelopeFlap({ innerConfig, outerConfig, debugRotationX = 0 }: Props) {
   const innerAsset = HANNA_ASSETS["envelope-flap-inner"];
   const outerAsset = HANNA_ASSETS["envelope-flap-outer"];
 
@@ -27,8 +28,8 @@ export default function EnvelopeFlap({ innerConfig, outerConfig }: Props) {
         height: `${innerConfig.height}px`,
         marginLeft: `-${innerConfig.width / 2}px`,
         marginTop: `-${innerConfig.height / 2}px`,
-        transform: `translate(${innerConfig.x}px, ${innerConfig.y}px) scale(${innerConfig.scaleX}, ${innerConfig.scaleY}) rotate(${innerConfig.rotation}deg)`,
-        transformOrigin: `${innerConfig.transformOriginX} ${innerConfig.transformOriginY}`,
+        transform: `translate(${innerConfig.x}px, ${innerConfig.y}px) scale(${innerConfig.scaleX}, ${innerConfig.scaleY}) rotateZ(${innerConfig.rotation}deg) rotateX(${debugRotationX}deg)`,
+        transformOrigin: `${ENVELOPE_CONSTANTS.FLAP_PHYSICAL_HINGE_X} ${ENVELOPE_CONSTANTS.FLAP_PHYSICAL_HINGE_Y}`,
         zIndex: innerConfig.layer,
         transformStyle: "preserve-3d",
         pointerEvents: "none",
@@ -48,7 +49,7 @@ export default function EnvelopeFlap({ innerConfig, outerConfig }: Props) {
         }}
       />
 
-      {/* Inner Face - Back (rotated 180deg to face the other way) */}
+      {/* Inner Face - Back (rotated 180deg to face the other way, offset to align hinge) */}
       <img
         src={`/assets/hanna${innerAsset.sourcePath}`}
         alt="flap-inner"
@@ -58,7 +59,7 @@ export default function EnvelopeFlap({ innerConfig, outerConfig }: Props) {
           width: "100%",
           height: "100%",
           backfaceVisibility: "hidden",
-          transform: "rotateX(180deg)",
+          transform: `translateY(${ENVELOPE_CONSTANTS.INNER_FLAP_OFFSET_Y}px) rotateX(180deg)`,
           opacity: innerConfig.opacity,
         }}
       />

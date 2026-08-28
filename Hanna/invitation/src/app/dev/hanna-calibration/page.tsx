@@ -6,9 +6,10 @@ import { ENVELOPE_STAGE_WIDTH, ENVELOPE_STAGE_HEIGHT } from "@/config/envelopeCa
 import ClosedBackView from "@/components/calibration/ClosedBackView";
 import OpenEnvelopeView from "@/components/calibration/OpenEnvelopeView";
 import IndividualAssetsView from "@/components/calibration/IndividualAssetsView";
+import { ENVELOPE_CONSTANTS } from "@/config/envelopeCalibration";
 
 type ViewMode = "CLOSED_BACK" | "OPEN_ENVELOPE" | "INDIVIDUAL_ASSETS";
-type CompareMode = "RECONSTRUCTION" | "MASTER" | "OVERLAY" | "BLINK";
+type CompareMode = "RECONSTRUCTION" | "MASTER" | "OVERLAY" | "BLINK" | "DIFFERENCE";
 
 export default function CalibrationPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("CLOSED_BACK");
@@ -53,8 +54,8 @@ export default function CalibrationPage() {
     return "";
   };
 
-  const showReconstruction = compareMode === "RECONSTRUCTION" || compareMode === "OVERLAY" || (compareMode === "BLINK" && !isBlinkMaster);
-  const showMaster = compareMode === "MASTER" || compareMode === "OVERLAY" || (compareMode === "BLINK" && isBlinkMaster);
+  const showReconstruction = compareMode !== "MASTER" && (compareMode !== "BLINK" || !isBlinkMaster);
+  const showMaster = compareMode !== "RECONSTRUCTION" && (compareMode !== "BLINK" || isBlinkMaster);
 
   return (
     <div className={styles.container}>
@@ -97,6 +98,12 @@ export default function CalibrationPage() {
                 >
                   Blink
                 </button>
+                <button 
+                  className={`${styles.button} ${compareMode === "DIFFERENCE" ? styles.active : ""}`}
+                  onClick={() => setCompareMode("DIFFERENCE")}
+                >
+                  Difference
+                </button>
               </div>
 
               {compareMode === "OVERLAY" && (
@@ -106,13 +113,17 @@ export default function CalibrationPage() {
                     type="range" 
                     min="0" max="100" 
                     value={overlayOpacity} 
-                    onChange={(e) => setOverlayOpacity(parseInt(e.target.value))}
+                    onChange={e => setOverlayOpacity(Number(e.target.value))} 
                   />
                   <span>{overlayOpacity}%</span>
                 </div>
               )}
             </>
           )}
+          
+          <div style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#666" }}>
+            <strong>Coordinate System:</strong> <code>x=0, y=0</code> represents the <em>center of the stage</em>. Positive Y goes down, positive X goes right.
+          </div>
         </div>
 
         <div className={styles.controls}>
@@ -141,6 +152,22 @@ export default function CalibrationPage() {
               height: ENVELOPE_STAGE_HEIGHT
             }}
           >
+            {/* CARD EXIT LINE DEBUG */}
+            {viewMode === "OPEN_ENVELOPE" && (
+              <div style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: `calc(50% + ${ENVELOPE_CONSTANTS.CARD_EXIT_LINE_Y}px)`,
+                height: "1px",
+                background: "repeating-linear-gradient(90deg, red, red 10px, lime 10px, lime 20px)",
+                zIndex: 999,
+                pointerEvents: "none"
+              }}>
+                <span style={{ position: "absolute", right: "10px", bottom: "2px", color: "red", fontSize: "10px", fontWeight: "bold" }}>CARD EXIT LINE</span>
+              </div>
+            )}
+
             {showGrid && <div className={styles.grid} />}
             {showAxes && (
               <>
@@ -150,7 +177,14 @@ export default function CalibrationPage() {
             )}
 
             {showReconstruction && (
-              <div style={{ position: "absolute", inset: 0, zIndex: 10 }}>
+              <div 
+                style={{ 
+                  position: "absolute", 
+                  inset: 0, 
+                  zIndex: 10,
+                  mixBlendMode: compareMode === "DIFFERENCE" ? "difference" : "normal"
+                }}
+              >
                 {viewMode === "CLOSED_BACK" && <ClosedBackView />}
                 {viewMode === "OPEN_ENVELOPE" && <OpenEnvelopeView />}
                 {viewMode === "INDIVIDUAL_ASSETS" && <IndividualAssetsView />}
@@ -163,7 +197,7 @@ export default function CalibrationPage() {
                 style={{
                   backgroundImage: `url(${getMasterImage()})`,
                   opacity: compareMode === "OVERLAY" ? overlayOpacity / 100 : 1,
-                  zIndex: compareMode === "MASTER" || (compareMode === "BLINK" && isBlinkMaster) ? 100 : 900
+                  zIndex: compareMode === "MASTER" || (compareMode === "BLINK" && isBlinkMaster) || compareMode === "DIFFERENCE" ? 100 : 900
                 }}
               />
             )}

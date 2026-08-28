@@ -14,7 +14,9 @@ export default function OpenEnvelopeView() {
   const [flapInnerConfig, setFlapInnerConfig] = useState(ENVELOPE_CALIBRATION["flap-inner"]);
   const [flapOuterConfig, setFlapOuterConfig] = useState(ENVELOPE_CALIBRATION["flap-outer"]);
   
-  const [showCard, setShowCard] = useState(false);
+  const [showCard, setShowCard] = useState(true);
+  const [showSlotShadow, setShowSlotShadow] = useState(false);
+  const [flapRotationX, setFlapRotationX] = useState(180);
   const [controlsContainer, setControlsContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -50,14 +52,60 @@ export default function OpenEnvelopeView() {
     );
   };
 
+  const handleCopyJSON = () => {
+    const json = {
+      "back-base": baseConfig,
+      "invitation-card": cardConfig,
+      "slot-shadow": shadowConfig,
+      "front-pocket": pocketConfig,
+      "flap-inner": flapInnerConfig,
+      "flap-outer": flapOuterConfig
+    };
+    navigator.clipboard.writeText(JSON.stringify(json, null, 2));
+    alert("Copied to clipboard!");
+  };
+
   const controls = (
     <>
-      <div style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem", display: "flex", gap: "1rem", alignItems: "center" }}>
         <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <input type="checkbox" checked={showCard} onChange={e => setShowCard(e.target.checked)} />
-          Show Invitation Card
+          Show Card inside envelope
         </label>
+        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <input type="checkbox" checked={showSlotShadow} onChange={e => setShowSlotShadow(e.target.checked)} />
+          Show Slot Shadow
+        </label>
+        <button 
+          onClick={handleCopyJSON}
+          style={{ padding: "0.25rem 0.5rem", background: "#0066cc", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+        >
+          Copy JSON
+        </button>
       </div>
+
+      <div style={{ marginBottom: "1rem" }}>
+        <h4 style={{ margin: "0 0 0.5rem 0" }}>Flap Local Geometry (Debug)</h4>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          {[0, 45, 90, 135, 180].map(deg => (
+            <button 
+              key={deg}
+              onClick={() => setFlapRotationX(deg)}
+              style={{
+                padding: "0.25rem 0.5rem",
+                background: flapRotationX === deg ? "#333" : "#eee",
+                color: flapRotationX === deg ? "white" : "black",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                cursor: "pointer"
+              }}
+            >
+              {deg}°
+            </button>
+          ))}
+        </div>
+      </div>
+
       <CalibrationControls name="Back Base" config={baseConfig} onChange={setBaseConfig} />
       {showCard && <CalibrationControls name="Card" config={cardConfig} onChange={setCardConfig} />}
       <CalibrationControls name="Slot Shadow" config={shadowConfig} onChange={setShadowConfig} />
@@ -76,13 +124,17 @@ export default function OpenEnvelopeView() {
       {showCard && renderAsset(cardConfig, "invitation-card-clean")}
       
       {/* LAYER 3: Slot Shadow */}
-      {renderAsset(shadowConfig, "envelope-slot-shadow")}
+      {showSlotShadow && renderAsset(shadowConfig, "envelope-slot-shadow")}
       
       {/* LAYER 4: Front Pocket */}
       {renderAsset(pocketConfig, "envelope-front-pocket")}
       
       {/* LAYER 5: Flap */}
-      <EnvelopeFlap innerConfig={flapInnerConfig} outerConfig={flapOuterConfig} />
+      <EnvelopeFlap 
+        innerConfig={flapInnerConfig} 
+        outerConfig={flapOuterConfig} 
+        debugRotationX={flapRotationX}
+      />
       
       {controlsContainer && createPortal(controls, controlsContainer)}
     </>
