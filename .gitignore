@@ -10,3 +10,4 @@ venv/
 Mariage/
 __pycache__/
 *.pyc
+artifacts/
