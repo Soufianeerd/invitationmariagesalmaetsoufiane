@@ -8,8 +8,15 @@ import styles from "@/app/page.module.css";
 
 export const HannaExperience: React.FC = () => {
   const [state, setState] = useState<EnvelopeState>("LOADING");
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
+    // Detect prefers-reduced-motion
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduceMotion(mediaQuery.matches);
+    const handler = (e: MediaQueryListEvent) => setReduceMotion(e.matches);
+    mediaQuery.addEventListener("change", handler);
+
     // Preload required assets for Phase 2A
     const assetsToPreload = [
       `/assets/hanna${HANNA_ASSETS["envelope-front"].sourcePath}`,
@@ -18,22 +25,28 @@ export const HannaExperience: React.FC = () => {
       `/assets/hanna${HANNA_ASSETS["envelope-edge"].sourcePath}`,
     ];
 
-    let loadedCount = 0;
-
-    const onImageLoaded = () => {
-      loadedCount++;
-      if (loadedCount === assetsToPreload.length) {
-        // A tiny delay feels a bit more natural before flying in
-        setTimeout(() => setState("ENVELOPE_ENTERING"), 100);
-      }
+    const preloadImage = (src: string) => {
+      return new Promise<void>((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.decode()
+          .then(() => resolve())
+          .catch((e) => {
+            console.error(`Failed to decode image: ${src}`, e);
+            reject(e);
+          });
+      });
     };
 
-    assetsToPreload.forEach((src) => {
-      const img = new Image();
-      img.onload = onImageLoaded;
-      img.onerror = onImageLoaded; // continue even if error, to not freeze
-      img.src = src;
-    });
+    Promise.all(assetsToPreload.map(preloadImage))
+      .then(() => {
+        setTimeout(() => setState("ENVELOPE_ENTERING"), 100);
+      })
+      .catch(() => {
+        setState("ERROR");
+      });
+
+    return () => mediaQuery.removeEventListener("change", handler);
   }, []);
 
   const handleEntranceComplete = () => {
@@ -59,17 +72,24 @@ export const HannaExperience: React.FC = () => {
       {/* Optional discrete loader */}
       {state === "LOADING" && (
         <div className={styles.loader}>
-          <div className={styles.spinner} />
+          <div className={styles.spinner} style={{ animationDuration: reduceMotion ? "0s" : "1s" }} />
+        </div>
+      )}
+      
+      {state === "ERROR" && (
+        <div className={styles.loader} style={{ textAlign: "center", color: "rgba(0,0,0,0.5)" }}>
+          Une erreur est survenue lors du chargement.
         </div>
       )}
 
-      {state !== "LOADING" && (
+      {state !== "LOADING" && state !== "ERROR" && (
         <>
           <EnvelopeScene
             state={state}
             onEntranceComplete={handleEntranceComplete}
             onFlipComplete={handleFlipComplete}
             onClick={handleEnvelopeClick}
+            reduceMotion={reduceMotion}
           />
           
           {/* Subtle instruction text during IDLE */}

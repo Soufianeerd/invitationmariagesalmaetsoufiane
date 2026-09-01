@@ -8,6 +8,7 @@ import styles from "@/app/page.module.css";
 export default function HannaMotionDevPage() {
   const [state, setState] = useState<EnvelopeState>("LOADING");
   const [debugAngle, setDebugAngle] = useState<number | undefined>(undefined);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -20,9 +21,25 @@ export default function HannaMotionDevPage() {
           if (state === "ENVELOPE_TURNING") setState("ENVELOPE_BACK_READY");
         }}
         onClick={() => {}}
-        // @ts-ignore - passing down to EnvelopeScene -> Envelope3D
+        reduceMotion={false}
         debugAngle={debugAngle}
       />
+      
+      {showOverlay && (
+        <img
+          src="/assets/hanna/references/envelope-back-closed-master.png"
+          alt="Overlay"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.8669)", // Assuming BASE_SCALE
+            opacity: 0.5,
+            pointerEvents: "none",
+            zIndex: 100
+          }}
+        />
+      )}
 
       <div
         style={{
@@ -61,7 +78,13 @@ export default function HannaMotionDevPage() {
           <button onClick={() => { setState("ENVELOPE_IDLE"); setDebugAngle(90); }}>90°</button>
           <button onClick={() => { setState("ENVELOPE_IDLE"); setDebugAngle(135); }}>135°</button>
           <button onClick={() => { setState("ENVELOPE_IDLE"); setDebugAngle(180); }}>180°</button>
-          <button onClick={() => { setDebugAngle(undefined); }}>Reset Angle Debug</button>
+          <button onClick={() => { 
+            setState("ENVELOPE_IDLE"); 
+            setDebugAngle(undefined); 
+          }}>Reset Front</button>
+          <button onClick={() => setShowOverlay(!showOverlay)}>
+            {showOverlay ? "Hide" : "Show"} Master Overlay
+          </button>
         </div>
       </div>
     </div>

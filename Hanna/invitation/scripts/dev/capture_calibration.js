@@ -1,14 +1,21 @@
-const { chromium } = require('playwright');
+const { chromium, webkit } = require('playwright');
 const fs = require('fs');
 
 (async () => {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  
-  const artifactsDir = '../../artifacts/calibration';
-  if (!fs.existsSync(artifactsDir)){
-      fs.mkdirSync(artifactsDir, { recursive: true });
-  }
+  const browsers = [
+    { name: 'Chromium', launch: () => chromium.launch() },
+    { name: 'WebKit', launch: () => webkit.launch() }
+  ];
+
+  for (const { name, launch } of browsers) {
+    console.log(`\n=== Running on ${name} ===`);
+    const browser = await launch();
+    const page = await browser.newPage();
+    
+    const artifactsDir = `../../artifacts/calibration/${name.toLowerCase()}`;
+    if (!fs.existsSync(artifactsDir)){
+        fs.mkdirSync(artifactsDir, { recursive: true });
+    }
 
   // --- PHASE 1C CALIBRATION ---
   await page.goto('http://localhost:3000/dev/hanna-calibration');
@@ -86,6 +93,7 @@ const fs = require('fs');
   await clickButton('180°');
   await page.screenshot({ path: `${artifactsDir}/16_Motion_Flip_180.png` });
 
-  await browser.close();
-  console.log("Screenshots captured successfully!");
+    await browser.close();
+    console.log(`Screenshots captured successfully for ${name}!`);
+  }
 })();

@@ -17,6 +17,7 @@ export type EnvelopeAssetPlacement = {
 
 export type EnvelopeState = 
   | "LOADING"
+  | "ERROR"
   | "ENVELOPE_ENTERING"
   | "ENVELOPE_IDLE"
   | "ENVELOPE_TURNING"
@@ -25,8 +26,12 @@ export type EnvelopeState =
 
 // Calculated Structural Constants
 export const ENVELOPE_CONSTANTS = {
-  BASE_X: 12.14, // Common X offset for envelope structural elements
-  BASE_Y: -13.87, // Common Y offset for envelope structural elements
+  OPEN_ASSEMBLY_X: 12.14,
+  OPEN_ASSEMBLY_Y: -13.87,
+  CLOSED_ENVELOPE_X: -0.43,
+  CLOSED_ENVELOPE_Y: 5.63,
+  BASE_X: 12.14, // Common X offset for envelope structural elements (Open)
+  BASE_Y: -13.87, // Common Y offset for envelope structural elements (Open)
   BASE_SCALE: 0.8669, // Common scale to fit 1600x960 stage
   CARD_EXIT_LINE_Y: -350, 
   CARD_INSIDE_WIDTH: 484, // Recalculated to fit inside envelope height
@@ -46,8 +51,12 @@ export const ENVELOPE_CONSTANTS = {
   FRONT_FACE_HEIGHT: 1024,
   FRONT_FACE_SCALE_X: 0.93026,
   FRONT_FACE_SCALE_Y: 0.81179,
-  FRONT_FACE_X: 13.04,
-  FRONT_FACE_Y: -32.89,
+  FRONT_FACE_X: 0.46,
+  FRONT_FACE_Y: -13.39,
+  EDGE_FADE_IN_START: 82,
+  EDGE_FULL_START: 88,
+  EDGE_FULL_END: 92,
+  EDGE_FADE_OUT_END: 98,
 };
 
 // Initial default placements to be calibrated
@@ -144,8 +153,8 @@ export const ENVELOPE_CALIBRATION: Record<string, EnvelopeAssetPlacement> = {
     layer: 70,
   },
   "back-closed": {
-    x: -0.43,
-    y: 5.63,
+    x: ENVELOPE_CONSTANTS.CLOSED_ENVELOPE_X,
+    y: ENVELOPE_CONSTANTS.CLOSED_ENVELOPE_Y,
     width: 1672,
     height: 941,
     scaleX: ENVELOPE_CONSTANTS.BASE_SCALE,

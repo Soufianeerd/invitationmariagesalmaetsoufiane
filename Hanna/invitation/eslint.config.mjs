@@ -1,3 +1,5 @@
+import pluginNext from "@next/eslint-plugin-next";
+
 export default [
   {
     ignores: [
@@ -6,14 +8,17 @@ export default [
       "build/**",
       "next-env.d.ts",
       "scripts/**",
-      "node_modules/**"
+      "node_modules/**",
+      "artifacts/**"
     ]
   },
   {
+    plugins: {
+      "@next/next": pluginNext,
+    },
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-      "react/no-unescaped-entities": "off",
-      "@next/next/no-img-element": "off"
-    }
+      ...pluginNext.configs.recommended.rules,
+      ...pluginNext.configs["core-web-vitals"].rules,
+    },
   }
 ];

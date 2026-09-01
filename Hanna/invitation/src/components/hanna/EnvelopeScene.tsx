@@ -9,11 +9,13 @@ interface EnvelopeSceneProps {
   onEntranceComplete: () => void;
   onFlipComplete: () => void;
   onClick: () => void;
+  reduceMotion: boolean;
   debugAngle?: number;
 }
 
 export const EnvelopeScene: React.FC<EnvelopeSceneProps> = (props) => {
   const [scale, setScale] = useState(1);
+  const shadowRef = React.useRef<HTMLDivElement>(null);
 
   // Responsive scaler
   useEffect(() => {
@@ -65,7 +67,24 @@ export const EnvelopeScene: React.FC<EnvelopeSceneProps> = (props) => {
           transformStyle: "preserve-3d", // Pass 3D to children
         }}
       >
-        <Envelope3D {...props} />
+        {/* GROUND SHADOW OUTSIDE THE MOTION WRAPPER */}
+        <div
+          ref={shadowRef}
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%", // Stage center
+            width: 1400,
+            height: 100,
+            marginLeft: -700,
+            marginTop: 400, // Below envelope
+            background: "radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 70%)",
+            opacity: 0,
+            pointerEvents: "none",
+            willChange: "transform, opacity",
+          }}
+        />
+        <Envelope3D {...props} shadowRef={shadowRef} />
       </div>
     </div>
   );
