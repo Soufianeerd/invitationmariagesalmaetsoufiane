@@ -15,6 +15,14 @@ export type EnvelopeAssetPlacement = {
   layer: number; // z-index equivalent
 };
 
+export type EnvelopeState = 
+  | "LOADING"
+  | "ENVELOPE_ENTERING"
+  | "ENVELOPE_IDLE"
+  | "ENVELOPE_TURNING"
+  | "ENVELOPE_BACK_READY";
+
+
 // Calculated Structural Constants
 export const ENVELOPE_CONSTANTS = {
   BASE_X: 12.14, // Common X offset for envelope structural elements
@@ -34,6 +42,12 @@ export const ENVELOPE_CONSTANTS = {
   FLAP_PHYSICAL_HINGE_X: "50%",
   FLAP_PHYSICAL_HINGE_Y: "3.4%", // 32px / 941px
   INNER_FLAP_OFFSET_Y: 6, // 32 - (941 - 915)
+  FRONT_FACE_WIDTH: 1536,
+  FRONT_FACE_HEIGHT: 1024,
+  FRONT_FACE_SCALE_X: 0.93026,
+  FRONT_FACE_SCALE_Y: 0.81179,
+  FRONT_FACE_X: 13.04,
+  FRONT_FACE_Y: -32.89,
 };
 
 // Initial default placements to be calibrated
