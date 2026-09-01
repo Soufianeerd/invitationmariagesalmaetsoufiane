@@ -52,6 +52,10 @@ const fs = require('fs');
   if (!(await cardCheckbox.isChecked())) {
     await cardCheckbox.check();
   }
+  const shadowCheckbox = page.getByLabel('Show Slot Shadow');
+  if (!(await shadowCheckbox.isChecked())) {
+    await shadowCheckbox.check();
+  }
   await page.waitForTimeout(500);
   await page.screenshot({ path: `${artifactsDir}/7_Card_Inside_Envelope.png` });
 

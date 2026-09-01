@@ -15,7 +15,7 @@ export default function OpenEnvelopeView() {
   const [flapOuterConfig, setFlapOuterConfig] = useState(ENVELOPE_CALIBRATION["flap-outer"]);
   
   const [showCard, setShowCard] = useState(true);
-  const [showSlotShadow, setShowSlotShadow] = useState(false);
+  const [showSlotShadow, setShowSlotShadow] = useState(true);
   const [flapRotationX, setFlapRotationX] = useState(180);
   const [controlsContainer, setControlsContainer] = useState<HTMLElement | null>(null);
 

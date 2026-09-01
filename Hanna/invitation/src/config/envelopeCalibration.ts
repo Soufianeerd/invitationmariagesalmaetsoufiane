@@ -17,6 +17,9 @@ export type EnvelopeAssetPlacement = {
 
 // Calculated Structural Constants
 export const ENVELOPE_CONSTANTS = {
+  BASE_X: 12.14, // Common X offset for envelope structural elements
+  BASE_Y: -13.87, // Common Y offset for envelope structural elements
+  BASE_SCALE: 0.8669, // Common scale to fit 1600x960 stage
   CARD_EXIT_LINE_Y: -350, 
   CARD_INSIDE_WIDTH: 484, // Recalculated to fit inside envelope height
   CARD_INSIDE_HEIGHT: 860, // Maintaining 941/1672 ratio
@@ -36,12 +39,12 @@ export const ENVELOPE_CONSTANTS = {
 // Initial default placements to be calibrated
 export const ENVELOPE_CALIBRATION: Record<string, EnvelopeAssetPlacement> = {
   "back-base": {
-    x: 12.14,
-    y: -13.87,
+    x: ENVELOPE_CONSTANTS.BASE_X,
+    y: ENVELOPE_CONSTANTS.BASE_Y,
     width: 1672,
     height: 941,
-    scaleX: 0.8669,
-    scaleY: 0.8669,
+    scaleX: ENVELOPE_CONSTANTS.BASE_SCALE,
+    scaleY: ENVELOPE_CONSTANTS.BASE_SCALE,
     rotation: 0,
     opacity: 1,
     transformOriginX: "50%",
@@ -49,10 +52,10 @@ export const ENVELOPE_CALIBRATION: Record<string, EnvelopeAssetPlacement> = {
     layer: 10,
   },
   "invitation-card": {
-    x: 126.22, 
-    y: -210.84, 
-    width: 1219.03, 
-    height: 2166.02,
+    x: ENVELOPE_CONSTANTS.CARD_INSIDE_X, 
+    y: ENVELOPE_CONSTANTS.CARD_INSIDE_Y, 
+    width: ENVELOPE_CONSTANTS.CARD_INSIDE_WIDTH, 
+    height: ENVELOPE_CONSTANTS.CARD_INSIDE_HEIGHT,
     scaleX: 1,
     scaleY: 1,
     rotation: 0,
@@ -62,25 +65,25 @@ export const ENVELOPE_CALIBRATION: Record<string, EnvelopeAssetPlacement> = {
     layer: 20,
   },
   "slot-shadow": {
-    x: 126.22,
-    y: -528.17, 
-    width: 1672,
-    height: 100, 
-    scaleX: 1,
-    scaleY: 0.1,
+    x: ENVELOPE_CONSTANTS.SHADOW_X,
+    y: ENVELOPE_CONSTANTS.SHADOW_Y, 
+    width: 2172, // Actual asset width
+    height: 724, // Actual asset height
+    scaleX: 0.8669, // Consistent scale
+    scaleY: ENVELOPE_CONSTANTS.SHADOW_SCALE_Y,
     rotation: 0,
-    opacity: 0.2,
+    opacity: ENVELOPE_CONSTANTS.SHADOW_OPACITY,
     transformOriginX: "50%",
     transformOriginY: "50%",
     layer: 30,
   },
   "front-pocket": {
-    x: 12.14,
-    y: -13.87, 
+    x: ENVELOPE_CONSTANTS.BASE_X,
+    y: ENVELOPE_CONSTANTS.BASE_Y, 
     width: 1536,
     height: 1024,
-    scaleX: 0.8669,
-    scaleY: 0.8669,
+    scaleX: ENVELOPE_CONSTANTS.BASE_SCALE,
+    scaleY: ENVELOPE_CONSTANTS.BASE_SCALE,
     rotation: 0,
     opacity: 1,
     transformOriginX: "50%",
@@ -88,12 +91,12 @@ export const ENVELOPE_CALIBRATION: Record<string, EnvelopeAssetPlacement> = {
     layer: 40,
   },
   "flap-inner": {
-    x: 12.14,
-    y: -13.87, 
+    x: ENVELOPE_CONSTANTS.BASE_X,
+    y: ENVELOPE_CONSTANTS.BASE_Y, 
     width: 1672,
     height: 941,
-    scaleX: 0.8669,
-    scaleY: 0.8669,
+    scaleX: ENVELOPE_CONSTANTS.BASE_SCALE,
+    scaleY: ENVELOPE_CONSTANTS.BASE_SCALE,
     rotation: 0,
     opacity: 1,
     transformOriginX: "50%",
@@ -101,12 +104,12 @@ export const ENVELOPE_CALIBRATION: Record<string, EnvelopeAssetPlacement> = {
     layer: 50,
   },
   "flap-outer": {
-    x: 12.14,
-    y: -13.87,
+    x: ENVELOPE_CONSTANTS.BASE_X,
+    y: ENVELOPE_CONSTANTS.BASE_Y,
     width: 1672,
     height: 941,
-    scaleX: 0.8669,
-    scaleY: 0.8669,
+    scaleX: ENVELOPE_CONSTANTS.BASE_SCALE,
+    scaleY: ENVELOPE_CONSTANTS.BASE_SCALE,
     rotation: 0,
     opacity: 1,
     transformOriginX: "50%",
@@ -131,8 +134,8 @@ export const ENVELOPE_CALIBRATION: Record<string, EnvelopeAssetPlacement> = {
     y: 5.63,
     width: 1672,
     height: 941,
-    scaleX: 0.8669,
-    scaleY: 0.8669,
+    scaleX: ENVELOPE_CONSTANTS.BASE_SCALE,
+    scaleY: ENVELOPE_CONSTANTS.BASE_SCALE,
     rotation: 0,
     opacity: 1,
     transformOriginX: "50%",
